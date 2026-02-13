@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Character, CharacterPage } from './characters.dto';
+import { CharactersResponse } from './characters.dto';
 import { CharactersRepository } from './characters.repository';
 
 @Injectable()
@@ -11,9 +11,17 @@ export class CharactersService {
       this.charactersRepository = charactersRepository;
   }
 
-  async getAliveCharactersFormatted(){
-    const allCharacters = await this.charactersRepository.getAllCharacters();
-    return allCharacters.filter((character) => character.status=='alive').map((character)=> character.name.replaceAll(' ','_'))
+  async getAliveCharactersFormatted(page: number): Promise<CharactersResponse>{
+    const characters = await this.charactersRepository.getAliveCharactersPage(page);
+    return {
+      results: characters.results.map((character)=> (
+        {
+          id: character.id,
+          name: character.name.replaceAll(' ','_'),
+          status: character.status
+        }
+      ))
+    }
   }
 
 }
