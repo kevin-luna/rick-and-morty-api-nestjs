@@ -24,6 +24,28 @@ describe('CharactersController (e2e)', () => {
         await app.close();
     });
 
+    it('pages <= 0 should return first page', async () => {
+
+        const response = await request(app.getHttpServer())
+        .get('/characters?page=1').expect(200);
+
+        expect(response.body).toHaveProperty('results');
+        
+        expect(response.body.results).not.toEqual([]);
+    
+    });
+
+    it('without page query param should return first page', async () => {
+
+        const response = await request(app.getHttpServer())
+        .get('/characters').expect(200);
+
+        expect(response.body).toHaveProperty('results');
+        
+        expect(response.body.results).not.toEqual([]);
+    
+    });
+
 
     it('output formatting is correct', async () => {
 
