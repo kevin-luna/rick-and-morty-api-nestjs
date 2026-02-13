@@ -8,15 +8,7 @@ export class CharactersRepository {
       try{
         return await fetchJSON(`https://rickandmortyapi.com/api/character/?status=alive&page=${page}`);
       }catch{
-        return {
-          info: {
-            count: 0,
-            pages: 0,
-            next: '',
-            prev: ''
-          },
-          results: []
-        }
+        throw new Error('Connection error')
       }
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { CharactersResponse } from './characters.dto';
 import { CharactersRepository } from './characters.repository';
 
@@ -12,15 +12,19 @@ export class CharactersService {
   }
 
   async getAliveCharactersFormatted(page: number): Promise<CharactersResponse>{
-    const characters = await this.charactersRepository.getAliveCharactersPage(page);
-    return {
-      results: characters.results.map((character)=> (
-        {
-          id: character.id,
-          name: character.name.replaceAll(' ','_'),
-          status: character.status
-        }
-      ))
+    try{
+      const characters = await this.charactersRepository.getAliveCharactersPage(page);
+      return {
+        results: characters.results.map((character)=> (
+          {
+            id: character.id,
+            name: character.name.replaceAll(' ','_'),
+            status: character.status
+          }
+        ))
+      }
+    }catch(error){
+      throw new ServiceUnavailableException('Service unavailable temporarily. Try later.');
     }
   }
 
